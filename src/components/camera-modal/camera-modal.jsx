@@ -132,6 +132,7 @@ CameraModal.propTypes = {
     capture: PropTypes.string,
     intl: intlShape.isRequired,
     loaded: PropTypes.bool,
+    removeColor: PropTypes.string,
     onBack: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onCapture: PropTypes.func.isRequired,

@@ -13,7 +13,6 @@ class ModalVideoManager {
         // image does not have to get sized down to accomodate double resolution
         this._canvasWidth = 960; // Double Stage Width
         this._canvasHeight = 720; // Double Stage Height
-
     }
 
     enableVideo (onPermissionSuccess, onVideoLoaded) {
@@ -36,13 +35,33 @@ class ModalVideoManager {
 
     _drawFrames () {
         const video = this._videoProvider.video;
-        this._videoFeedInterval = setInterval(() =>
-            this._canvas.getContext('2d').drawImage(video,
+        this._videoFeedInterval = setInterval(() => {
+            let ctx = this._canvas.getContext('2d');
+            ctx.drawImage(video,
                 // source x, y, width, height
                 0, 0, video.videoWidth, video.videoHeight,
                 // dest x, y, width, height
                 0, 0, this._canvasWidth, this._canvasHeight
-            ), this._frameTimeout);
+            )
+            let image = ctx.getImageData(0, 0, this._canvasWidth, this._canvasHeight)
+            let data = image.data;
+            let newColor = {r:0 ,g:0 ,b:0, a:0};
+
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i], g = data[i+1], b = data[i+2];
+            
+                // If its white then change it
+                if(r >= 128 && g >= 128 && b >= 128){ 
+                    // Change the white to whatever.
+                    data[i] = newColor.r;
+                    data[i+1] = newColor.g;
+                    data[i+2] = newColor.b;
+                    data[i+3] = newColor.a;
+                }
+            }
+            ctx.putImageData(image,0,0);
+            //console.log(data);
+        }, this._frameTimeout);
     }
 
     takeSnapshot () {
